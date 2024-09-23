@@ -1,7 +1,7 @@
 import os
 from openai import OpenAI
 import json
-import time  # 用于实现重试机制
+import time 
 
 client = OpenAI(
     api_key="your-api-key",
@@ -9,14 +9,12 @@ client = OpenAI(
 )
 deployment = "deepseek-chat"
 
-# 用于调用API生成摘要
 def get_summary(text):
     prompt = f"总结以下文本内容，限制在3-5句话：\n\n{text}"
     messages = [{"role": "user", "content": prompt}]
     
     try:
-        # 增加API调用的重试机制
-        for _ in range(3):  # 尝试3次
+        for _ in range(3):  
             try:
                 response = client.chat.completions.create(
                     model=deployment,
@@ -34,7 +32,6 @@ def get_summary(text):
         print(f"处理 API 请求时出错: {str(e)}")
         return None
 
-# 从文件中读取文本的函数
 def read_text_from_file(file_path):
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
@@ -46,7 +43,6 @@ def read_text_from_file(file_path):
         print(f"读取文件 '{file_path}' 时出错: {str(e)}")
         return None
 
-# 对多个文本进行总结
 def summarize_multiple_texts(file_paths):
     summaries = {}
     
