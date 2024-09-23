@@ -43,7 +43,7 @@ def summarize_multiple_texts(file_paths):
                 summaries.append(summary)
     return summaries
 
-# 示例用法
+# 用法
 file_paths = ["file1.txt", "file2.txt", "file3.txt"]
 summaries = summarize_multiple_texts(file_paths)
 
