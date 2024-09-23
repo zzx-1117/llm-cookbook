@@ -1,0 +1,50 @@
+import os  
+from openai import OpenAI, OpenAIError  
+  
+# 初始化OpenAI客户端  
+client = OpenAI(  
+    api_key="your-api-key",  
+    base_url="https://api.openai.com"   
+)  
+  
+deployment = "deepseek-chat"  
+  
+def get_summary(text):  
+    prompt = f"Summarize the following text in 3-5 sentences:\n\n{text}"  
+    messages = [{"role": "user", "content": prompt}]  
+    try:  
+        response = client.chat.completions.create(  
+            model=deployment,  
+            messages=messages,  
+            temperature=0.7,  
+            max_tokens=150  
+        )  
+        return response.choices[0].message.content  
+    except OpenAIError as e:  
+        return f"Error: {e}"  
+  
+def read_text_from_file(file_path):  
+    try:  
+        with open(file_path, 'r', encoding='utf-8') as file:  
+            return file.read()  
+    except FileNotFoundError:  
+        return "File not found."  
+    except Exception as e:  
+        return f"Error reading file: {e}"  
+  
+def summarize_multiple_texts(file_paths):  
+    summaries = []  
+    for file_path in file_paths:  
+        text = read_text_from_file(file_path)  
+        if text:  
+            summary = get_summary(text)  
+            summaries.append(summary)  
+        else:  
+            summaries.append("No text to summarize.")  
+    return summaries  
+  
+# 示例使用  
+file_paths = ["text1.txt", "text2.txt"]  # 确保这些文件存在并包含文本  
+summaries = summarize_multiple_texts(file_paths)  
+for index, summary in enumerate(summaries, start=1):  
+    print(f"Summary {index}: {summary}")
