@@ -2,7 +2,7 @@ import os
 from openai import OpenAI
 
 client = OpenAI(
-  api_key="sk-9452439c234b463eae85036fb4fd0bbb",
+  api_key="",
   base_url="https://api.deepseek.com"
 )
 deployment = "deepseek-chat"
