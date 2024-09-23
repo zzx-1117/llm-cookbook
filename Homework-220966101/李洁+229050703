@@ -1,0 +1,58 @@
+import os  
+from openai import OpenAI, OpenAIError  
+  
+
+client = OpenAI(  
+    api_key="your-api-key",  
+    base_url="https://api.openai.com/v1"  
+)  
+  
+deployment = "deepseek-chat"  
+  
+def get_summary(text):  
+    prompt = f"Summarize the following text in 3-5 sentences:\n\n{text}"  
+    messages = [{"role": "user", "content": prompt}]  
+    try:  
+        response = client.chat.completions.create(  
+            model=deployment,  
+            messages=messages,  
+            temperature=0.7,  
+            max_tokens=150  
+        )  
+        return response.choices[0].message.content  
+    except OpenAIError as e:  
+        print(f"Error from OpenAI API: {e}")  
+        return None  
+  
+def read_text_from_file(file_path):  
+    try:  
+        with open(file_path, 'r', encoding='utf-8') as file:  
+            return file.read()  
+    except FileNotFoundError:  
+        print(f"File not found: {file_path}")  
+        return None  
+    except Exception as e:  
+        print(f"An error occurred while reading the file: {e}")  
+        return None  
+  
+def summarize_multiple_texts(file_paths):  
+    summaries = []  
+    for file_path in file_paths:  
+        text = read_text_from_file(file_path)  
+        if text:  
+            summary = get_summary(text)  
+            if summary:  
+                summaries.append((file_path, summary))  
+            else:  
+                summaries.append((file_path, "Failed to generate summary"))  
+        else:  
+            summaries.append((file_path, "Failed to read file"))  
+    return summaries  
+  
+# 测试函数  
+file_paths = ["path/to/your/first/text.txt", "path/to/your/second/text.txt"]  
+summaries = summarize_multiple_texts(file_paths)  
+for file_path, summary in summaries:  
+    print(f"File: {file_path}")  
+    print("Summary:", summary)  
+    print("="*50)
